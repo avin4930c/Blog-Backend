@@ -1,10 +1,11 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
-const session = require('express-session'); 
+const session = require('express-session');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const cors = require('cors')
+const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit");
@@ -15,7 +16,7 @@ const usersRouter = require('./routes/users');
 const blogRouter = require('./routes/blog');
 
 mongoose.set("strictQuery", false);
-const mongoDB = "mongodb+srv://avinash4930c:epA86x2T9FCX7UdJ@cluster0.wsag4uw.mongodb.net/blog-api?retryWrites=true&w=majority&appName=Cluster0";
+const mongoDB = process.env.MONGODB_URI;
 
 main().catch((err) => console.log(err));
 async function main() {
@@ -39,7 +40,7 @@ app.use(compression());
 app.use(cors());
 
 app.use(session({
-  secret: 'luffy',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
 }));
@@ -54,16 +55,14 @@ app.use(
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 100 requests per windowMs
+  max: 10000, // limit each IP to 1000 requests per windowMs
 });
 
 app.use(limiter);
 
-
-
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
-app.use('/blog', blogRouter)
+app.use('/blog', blogRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

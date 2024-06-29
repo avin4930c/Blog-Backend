@@ -9,7 +9,7 @@ const userSchema = new Schema({
     imgUrl: { type: String, default: 'https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg' },
     bio: { type: String, default: '' },
     password: { type: String, required: true },
-    role: { type: String, default: 'user'},
+    role: { type: String, default: 'user' },
 });
 
 userSchema.virtual('name').get(function () {

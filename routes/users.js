@@ -3,7 +3,6 @@ const router = express.Router();
 const userController = require('../Controllers/userController');
 const authenticateJWT = require('../jwtAuth');
 
-/* GET users listing. */
 router.get('/login', userController.login_get);
 
 router.post('/login', userController.login_post);
