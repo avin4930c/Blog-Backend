@@ -15,9 +15,9 @@ The site is hosted on Vercel and can be accessed [https://blog-cms-six-omega.ver
 
 ## Technologies Used
 
-- **Node.js**: JavaScript runtime for server-side application.
-- **Express**: Web framework for Node.js.
-- **MongoDB**: NoSQL database for storing application data.
-- **JWT (JSON Web Tokens)**: For secure authentication.
-- **Cloudinary**: Cloud service for image and video management.
-- **Helmet**: Middleware to secure Express apps.
+- **Node.js**
+- **Express**
+- **MongoDB**
+- **JWT (JSON Web Tokens)**
+- **Cloudinary**
+- **Helmet**
