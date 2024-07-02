@@ -2,8 +2,6 @@
 
 Welcome to the Blog Backend repository! This project serves as the backend for a blog application, providing APIs for user authentication, content management, and more.
 
-The site is hosted on Vercel and can be accessed [https://blog-cms-six-omega.vercel.app/](https://blog-cms-six-omega.vercel.app/).
-
 ## Features
 
 - **User Authentication**: APIs for user registration, login, logout, and profile management.
