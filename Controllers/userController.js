@@ -2,6 +2,17 @@ const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+async function verifyGoogleToken(token) {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    return payload;
+  }
 
 exports.register_get = asyncHandler(async (req, res) => {
     res.render('register_form', { title: 'Register' });
@@ -55,6 +66,35 @@ exports.login_post = asyncHandler(async (req, res) => {
         res.json({ auth: true, token });
     } else {
         res.status(401).json('Invalid username or password');
+    }
+});
+
+exports.login_google = asyncHandler(async (req, res) => {
+    const { token } = req.body;
+    try {
+        const googleUser = await verifyGoogleToken(token);
+        console.log('Google user:', googleUser)
+
+        let user = await User.findOne({ mail_address: googleUser.email });
+
+        if (!user) {
+            user = new User({
+                googleId: googleUser.sub,
+                username: googleUser.email,
+                mail_address: googleUser.email,
+                first_name: googleUser.given_name,
+                last_name: googleUser.family_name || '',
+            });
+            await user.save();
+        }
+
+
+        const jwtToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1hr' });
+
+        res.json({ auth: true, token: jwtToken });
+    } catch (error) {
+        console.error('Error verifying Google token:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

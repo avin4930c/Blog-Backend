@@ -7,6 +7,8 @@ router.get('/login', userController.login_get);
 
 router.post('/login', userController.login_post);
 
+router.post('/googleLogin', userController.login_google);
+
 router.get('/register', userController.register_get);
 
 router.post('/register', userController.register_post);
