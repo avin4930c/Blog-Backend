@@ -7,12 +7,12 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 async function verifyGoogleToken(token) {
     const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
     return payload;
-  }
+}
 
 exports.register_get = asyncHandler(async (req, res) => {
     res.render('register_form', { title: 'Register' });
@@ -73,9 +73,20 @@ exports.login_google = asyncHandler(async (req, res) => {
     const { token } = req.body;
     try {
         const googleUser = await verifyGoogleToken(token);
-        console.log('Google user:', googleUser)
+        const roleCheck = req.headers['rolecheck'];
+        console.log("role", roleCheck);
 
-        let user = await User.findOne({ mail_address: googleUser.email });
+        let user = "";
+
+        if (roleCheck === 'true') {
+            user = await User.findOne({ mail_address: googleUser.email, role: 'admin' });
+            if (!user) {
+                return res.status(403).json("You are not authorized to login");
+            }
+        }
+        else {
+            user = await User.findOne({ mail_address: googleUser.email });
+        }
 
         if (!user) {
             user = new User({
