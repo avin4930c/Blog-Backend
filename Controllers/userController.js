@@ -49,8 +49,6 @@ exports.login_post = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const roleCheck = req.headers['rolecheck'];
 
-    console.log("hello");
-
     let user = "";
     if (roleCheck === 'true') {
         user = await User.findOne({ mail_address: email, role: 'admin' });
@@ -74,7 +72,6 @@ exports.login_google = asyncHandler(async (req, res) => {
     try {
         const googleUser = await verifyGoogleToken(token);
         const roleCheck = req.headers['rolecheck'];
-        console.log("role", roleCheck);
 
         let user = "";
 
